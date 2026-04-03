@@ -90,18 +90,24 @@ if st.button("🚀 Iniciar Análisis Profesional"):
         
         with st.spinner("Extrayendo datos y analizando estrategia..."):
             lector = PyPDF2.PdfReader(archivo)
-            texto_demanda = "\n".join([p.extract_text() for p in lector.pages])
+            texto_demanda = ""
+            for pagina in lector.pages:
+                texto_demanda += pagina.extract_text() + "\n"
+            
+            # Limpieza básica para reducir tokens innecesarios
+            texto_demanda = " ".join(texto_demanda.split())
+            
             matriz = obtener_matriz_estrategia()
             
-            prompt_sistema = f"""Actúa como un prolijo Prosecretario de Juzgado.
-Tu tarea es analizar el documento adjunto y generar un informe técnico.
+            prompt_sistema = f"""Actúa como un prolijo Prosecretario de Juzgado Especialista en Seguridad Social.
+Tu tarea es analizar el documento adjunto y generar un informe técnico basado estrictamente en la matriz de defensa.
 
 1. PRIMERO: Extrae los datos de identificación:
-   - Carátula (Nombre de las partes)
+   - Carátula (Nombre del actor vs ANSES)
    - Número de Expediente
    - Número de Juzgado
 
-2. SEGUNDO: Analiza la presencia de estos planteos según esta matriz:
+2. SEGUNDO: Analiza la presencia de estos planteos según esta matriz de referencia:
 {matriz}
 
 3. FORMATO DE SALIDA (ESTRICTO):
@@ -112,15 +118,14 @@ Tu tarea es analizar el documento adjunto y generar un informe técnico.
 - **Juzgado:** [Número]
 
 ## MATRIZ DE DEFENSA DETECTADA
-| Planteo Detectado | Evidencia Textual (Cita) | Certeza |
+| Planteo Detectado | Evidencia Textual (Cita breve del párrafo) | Certeza |
 | :--- | :--- | :--- |
-(Genera la tabla aquí)
 
-Usa un tono profesional."""
+Usa un tono profesional y técnico."""
 
             try:
                 res = client.chat.completions.create(
-                    model="gpt-4o",
+                    model="gpt-4o-mini", # CAMBIO CLAVE: Modelo con límites más altos y económico
                     messages=[
                         {"role": "system", "content": prompt_sistema},
                         {"role": "user", "content": texto_demanda}
@@ -129,7 +134,7 @@ Usa un tono profesional."""
                 )
                 
                 informe_final = res.choices[0].message.content
-                st.success("Análisis Terminado")
+                st.success("¡Análisis Terminado con éxito!")
                 st.markdown(informe_final)
                 
                 # Generar el Word con la nueva función de tablas
@@ -142,4 +147,4 @@ Usa un tono profesional."""
                     mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 )
             except Exception as e:
-                st.error(f"Error: {e}")
+                st.error(f"Error detectado: {e}")
