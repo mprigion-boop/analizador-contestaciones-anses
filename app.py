@@ -102,12 +102,14 @@ if st.button("🚀 Iniciar Análisis Profesional"):
             prompt_sistema = f"""Actúa como un prolijo Prosecretario de Juzgado Especialista en Seguridad Social.
 Tu tarea es analizar el documento adjunto y generar un informe técnico basado estrictamente en la matriz de defensa.
 
+INSTRUCCIÓN CRÍTICA: Debes actuar como un sistema de checklist. Itera mentalmente sobre CADA UNO de los planteos de la matriz y búscalo en el texto. No omitas ninguno.
+
 1. PRIMERO: Extrae los datos de identificación:
    - Carátula (Nombre del actor vs ANSES)
    - Número de Expediente
    - Número de Juzgado
 
-2. SEGUNDO: Analiza la presencia de estos planteos según esta matriz de referencia:
+2. SEGUNDO: Analiza la presencia de estos planteos evaluando la matriz fila por fila:
 {matriz}
 
 3. FORMATO DE SALIDA (ESTRICTO):
@@ -121,6 +123,7 @@ Tu tarea es analizar el documento adjunto y generar un informe técnico basado e
 | Planteo Detectado | Evidencia Textual (Cita breve del párrafo) | Certeza |
 | :--- | :--- | :--- |
 
+(Nota: Incluye en la tabla SOLO los planteos que efectivamente encontraste en el texto).
 Usa un tono profesional y técnico."""
 
             try:
