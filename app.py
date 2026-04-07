@@ -100,19 +100,22 @@ if st.button("🚀 Iniciar Análisis Profesional"):
             matriz = obtener_matriz_estrategia()
             
             prompt_sistema = f"""Actúa como un prolijo Prosecretario de Juzgado Especialista en Seguridad Social.
-Tu tarea es analizar el documento adjunto y generar un informe técnico basado estrictamente en la matriz de defensa.
 
-INSTRUCCIÓN CRÍTICA: Debes actuar como un sistema de checklist. Itera mentalmente sobre CADA UNO de los planteos de la matriz y búscalo en el texto. No omitas ninguno.
+INSTRUCCIÓN CRÍTICA Y ABSOLUTAMENTE OBLIGATORIA: Vas a realizar un mapeo EXHAUSTIVO. Debes leer la matriz de defensa y por CADA UNO de los planteos listados, debes generar una fila en la tabla de resultados. ¡Está estrictamente prohibido omitir planteos de la matriz en tu respuesta final!
 
 1. PRIMERO: Extrae los datos de identificación:
    - Carátula (Nombre del actor vs ANSES)
-   - Número de Expediente
-   - Número de Juzgado
+   - Expediente
+   - Juzgado
 
 2. SEGUNDO: Analiza la presencia de estos planteos evaluando la matriz fila por fila:
 {matriz}
 
-3. FORMATO DE SALIDA (ESTRICTO):
+3. TERCERO: Completa la tabla OBLIGATORIAMENTE con todos los planteos. 
+   - Si el planteo ESTÁ en el texto, pon una cita textual breve en la Evidencia y "Alta" en Certeza.
+   - Si el planteo NO ESTÁ en el texto, pon "NO DETECTADO" en la columna de Evidencia y "Nula" en Certeza.
+
+FORMATO DE SALIDA (ESTRICTO):
 # REPORTE DE ANÁLISIS LEGAL
 ## DATOS DEL EXPEDIENTE
 - **Carátula:** [Nombre]
@@ -120,11 +123,10 @@ INSTRUCCIÓN CRÍTICA: Debes actuar como un sistema de checklist. Itera mentalme
 - **Juzgado:** [Número]
 
 ## MATRIZ DE DEFENSA DETECTADA
-| Planteo Detectado | Evidencia Textual (Cita breve del párrafo) | Certeza |
+| Planteo Evaluado | Evidencia Textual (Cita breve) o "NO DETECTADO" | Certeza |
 | :--- | :--- | :--- |
 
-(Nota: Incluye en la tabla SOLO los planteos que efectivamente encontraste en el texto).
-Usa un tono profesional y técnico."""
+Usa un tono técnico, profesional y respeta el formato Markdown para la tabla."""
 
             try:
                 res = client.chat.completions.create(
